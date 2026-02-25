@@ -1,6 +1,5 @@
-name: C Build and Test
+name: C/C++ CI
 
-# mainブランチへのpushまたはPull Requestで実行
 on:
   push:
     branches: [ "main" ]
@@ -8,26 +7,29 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
-    # 実行環境は最新のUbuntu（Linux）を使用
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. リポジトリのコードをチェックアウト（取得）
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    # 2. コンパイラ(gcc)とビルドツール(make)の準備
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc make
+        /* Raylibとその動作に必要なLinux用パッケージをインストール */
+        sudo apt-get install -y libraylib-dev libasound2-dev libmesa-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libxkbcommon-dev
 
-    # 3. Makefileを使用してテストを実行
-    # ここで 'make test' を呼ぶことで、test_physics.exeのビルドと実行が行われます
     - name: Build and Run Tests
-      run: make test
+      run: |
+        /* テストプログラムのビルドチェック */
+        gcc -I include src/test_physics.c src/physics_engine.c -o test_physics \
+            -lraylib -lm -lpthread -ldl -lrt -lX11
+        
+        /* テストの実行 */
+        ./test_physics
 
-    # 4. (オプション) 本番用のバイナリもビルドできるか最終確認
-    - name: Build Production App
-      run: make
+    - name: Build Application
+      run: |
+        /* メインプログラムのビルドチェック */
+        gcc -I include src/physics.c src/physics_engine.c -o physics_app \
+            -lraylib -lm -lpthread -ldl -lrt -lX11
