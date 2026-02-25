@@ -1,0 +1,33 @@
+name: C Build and Test
+
+# mainブランチへのpushまたはPull Requestで実行
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    # 実行環境は最新のUbuntu（Linux）を使用
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. リポジトリのコードをチェックアウト（取得）
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. コンパイラ(gcc)とビルドツール(make)の準備
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make
+
+    # 3. Makefileを使用してテストを実行
+    # ここで 'make test' を呼ぶことで、test_physics.exeのビルドと実行が行われます
+    - name: Build and Run Tests
+      run: make test
+
+    # 4. (オプション) 本番用のバイナリもビルドできるか最終確認
+    - name: Build Production App
+      run: make
