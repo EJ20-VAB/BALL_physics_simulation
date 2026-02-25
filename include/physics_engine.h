@@ -14,6 +14,6 @@ typedef struct {
 float update_velocity(float v, float g);
 float update_position(float y, float v);
 /* 経過時間 dt を受け取るように変更）*/
-void update_physics(Ball *ball, double dt);
+void update_physics(Ball *ball, double dt, int screenWidth, int screenHeight);
 
 #endif

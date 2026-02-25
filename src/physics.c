@@ -12,14 +12,14 @@ int main(void) {
     InitWindow(screenWidth, screenHeight, "Physics Simulation - Ball Falling");
 
     /* ボールの初期状態 */
-    Ball myBall = { 100.0, 50.0, 200.0, 0.0 }; // x, y, vx, vy
+    Ball myBall = { 100.0, 50.0, 200.0, 0.0 }; // x, y, vx(初速), vy
 
     SetTargetFPS(60); /* 1秒間に60回ループさせる設定 */
 
     /* --- メイン描画ループ --- */
     while (!WindowShouldClose()) {
         /*  Update: 物理演算 */
-        update_physics(&myBall, 1.0/60.0);
+        update_physics(&myBall, 1.0/60.0, screenWidth, screenHeight);
 
         /* Draw: 描画 */
         BeginDrawing();
