@@ -16,11 +16,23 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libraylib-dev libasound2-dev libmesa-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libxkbcommon-dev
+        # 必要なビルドツールをインストール
+        sudo apt-get install -y build-essential git cmake libasound2-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libxkbcommon-dev libwayland-dev libxkbcommon-x11-dev xorg-dev
+
+    - name: Build Raylib from source
+      run: |
+        # Raylibを一時フォルダにダウンロードしてビルド・インストール
+        git clone --depth 1 https://github.com/raysan5/raylib.git
+        cd raylib
+        mkdir build && cd build
+        cmake -DBUILD_EXAMPLES=OFF ..
+        make
+        sudo make install
+        cd ../..
 
     - name: Build and Run Tests
       run: |
-        # Linux環境向けにリンク順序を厳密に指定
+        # インストールしたライブラリを使ってビルド（-lgdi32などは不要）
         gcc -I include src/test_physics.c src/physics_engine.c -o test_physics \
             -lraylib -lm -lpthread -ldl -lrt -lX11
         ./test_physics
