@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,20 +16,17 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        /* Raylibとその動作に必要なLinux用パッケージをインストール */
+        /* ここで実際にパッケージをインストールします */
         sudo apt-get install -y libraylib-dev libasound2-dev libmesa-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libxkbcommon-dev
 
     - name: Build and Run Tests
       run: |
-        /* テストプログラムのビルドチェック */
+        /* Linux環境向けにビルドコマンドを調整 */
         gcc -I include src/test_physics.c src/physics_engine.c -o test_physics \
             -lraylib -lm -lpthread -ldl -lrt -lX11
-        
-        /* テストの実行 */
         ./test_physics
 
-    - name: Build Application
+    - name: Build Production App
       run: |
-        /* メインプログラムのビルドチェック */
         gcc -I include src/physics.c src/physics_engine.c -o physics_app \
             -lraylib -lm -lpthread -ldl -lrt -lX11
